@@ -1,0 +1,11 @@
+package com.example.building_system;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class BuildingSystemApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(BuildingSystemApplication.class, args);
+    }
+}
