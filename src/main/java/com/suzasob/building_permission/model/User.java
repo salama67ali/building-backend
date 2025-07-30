@@ -14,12 +14,14 @@ public class User {
     private Long userId;
 
     @Schema(description = "Full name of the user", example = "John Doe", required = true)
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @Schema(description = "Unique email address of the user", example = "john.doe@example.com", required = true)
     private String email;
 
+    @Column(nullable = false)
     @Schema(description = "User password", example = "SecurePassword123", required = true, accessMode = Schema.AccessMode.WRITE_ONLY)
     private String password;
 
@@ -85,7 +87,6 @@ public class User {
                 "userId=" + userId +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
     }
