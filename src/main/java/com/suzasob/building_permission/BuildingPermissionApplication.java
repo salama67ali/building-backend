@@ -1,5 +1,7 @@
 package com.suzasob.building_permission;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class BuildingPermissionApplication {

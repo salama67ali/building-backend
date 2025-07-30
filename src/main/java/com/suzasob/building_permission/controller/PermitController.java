@@ -1,4 +1,4 @@
-package com.suzasob.controller;
+package com.suzasob.building_permission.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

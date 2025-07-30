@@ -10,5 +10,6 @@ import com.suzasob.building_permission.model.ConstructionProject;
 @Repository
 public interface ConstructionProjectRepository extends JpaRepository<ConstructionProject, Long> {
     List<ConstructionProject> findByStatus(String status);
-    List<ConstructionProject> findByOwnerId(Long ownerId);
+
+    List<ConstructionProject> findByOwnerUserId(Long ownerId);
 }

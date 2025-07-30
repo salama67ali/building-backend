@@ -12,10 +12,11 @@ import java.util.List;
 @Repository
 public interface InspectionRepository extends JpaRepository<Inspection, Long> {
     // Get inspections by assigned engineer
-List<Inspection> findByInspector(User inspector);
+    List<Inspection> findByInspector(User inspector);
 
-// Get inspections by project
-List<Inspection> findByProject(ConstructionProject project);
+    // Get inspections by project
+    List<Inspection> findByProject(ConstructionProject project);
+
     // Get inspections by status
     List<Inspection> findByStatus(String status);
 
@@ -23,5 +24,5 @@ List<Inspection> findByProject(ConstructionProject project);
     List<Inspection> findByProjectAndStatus(ConstructionProject project, String status);
 
     // Get inspections by date range
-    List<Inspection> findByDateBetween(Date startDate, Date endDate);
+    List<Inspection> findByInspectionDateBetween(Date startDate, Date endDate);
 }

@@ -5,7 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "inspections")
-public class Inspection<GovernmentBoards> {
+public class Inspection {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,7 @@ public class Inspection<GovernmentBoards> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
-    private GovernmentBoards board;
+    private User board;
 
     // Constructors
     public Inspection() {
@@ -103,11 +103,11 @@ public class Inspection<GovernmentBoards> {
         this.inspector = inspector;
     }
 
-    public GovernmentBoards getBoard() {
+    public User getBoard() {
         return board;
     }
 
-    public void setBoard(GovernmentBoards board) {
+    public void setBoard(User board) {
         this.board = board;
     }
 

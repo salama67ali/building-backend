@@ -1,4 +1,4 @@
-package com.suzasob.controller;
+package com.suzasob.building_permission.controller;
 
 import java.util.List;
 

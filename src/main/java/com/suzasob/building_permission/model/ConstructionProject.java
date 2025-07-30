@@ -1,11 +1,12 @@
 package com.suzasob.building_permission.model;
 
+import jakarta.persistence.*;
+import lombok.Data;
 import java.util.Date;
 
 @Entity
+@Data
 public class ConstructionProject {
-
-    private static final String CascadeType = null;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,99 +38,4 @@ public class ConstructionProject {
     @JoinColumn(name = "location_id")
     private Location location;
 
-    // Constructors
-    public ConstructionProject() {
-    }
-
-    public ConstructionProject(Long projectId, String name, String status, Date submissionDate,
-                               String torDocument, String buildingPlan, User owner,
-                               User consultant, User engineer, Location location) {
-        this.projectId = projectId;
-        this.name = name;
-        this.status = status;
-        this.submissionDate = submissionDate;
-        this.torDocument = torDocument;
-        this.buildingPlan = buildingPlan;
-        this.owner = owner;
-        this.consultant = consultant;
-        this.engineer = engineer;
-        this.location = location;
-    }
-
-    // Getters and Setters
-    public Long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(Long projectId) {
-        this.projectId = projectId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getSubmissionDate() {
-        return submissionDate;
-    }
-
-    public void setSubmissionDate(Date submissionDate) {
-        this.submissionDate = submissionDate;
-    }
-
-    public String getTorDocument() {
-        return torDocument;
-    }
-
-    public void setTorDocument(String torDocument) {
-        this.torDocument = torDocument;
-    }
-
-    public String getBuildingPlan() {
-        return buildingPlan;
-    }
-
-    public void setBuildingPlan(String buildingPlan) {
-        this.buildingPlan = buildingPlan;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public User getConsultant() {
-        return consultant;
-    }
-
-    public void setConsultant(User consultant) {
-        this.consultant = consultant;
-    }
-
-    public User getEngineer() {
-        return engineer;
-    }
-
-    public void setEngineer(User engineer) {
-        this.engineer = engineer;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
 }

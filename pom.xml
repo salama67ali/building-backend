@@ -22,13 +22,9 @@
 
     <properties>
         <java.version>17</java.version>
-      <hibernate.version>6.2.5.Final</hibernate.version>
-        <spring-boot.version>3.2.12</spring-boot.version> 
-        <maven.compiler.source> 19.0.1</maven.compiler.source>
-		<maven.compiler.target> 19.0.1</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
-
-    <dependencies>
 
     <dependencies>
         <!-- Web Starter -->
@@ -51,23 +47,18 @@
         </dependency>
 
         <!-- PostgreSQL Driver -->
-
-        <!-- PostgreSQL -->
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
 
-
-
+        <!-- Hibernate Spatial -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-spatial</artifactId>
         </dependency>
 
-		
-
+        <!-- JTS Core for Spatial Operations -->
         <dependency>
             <groupId>org.locationtech.jts</groupId>
             <artifactId>jts-core</artifactId>
@@ -82,21 +73,11 @@
         </dependency>
 
         <!-- Developer Tools -->
-
-        <!-- Spring Data JPA -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <!-- Optional: DevTools for Hot Reload -->
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
         </dependency>
-
 
         <!-- Test Dependencies -->
         <dependency>
@@ -105,11 +86,19 @@
             <scope>test</scope>
         </dependency>
 
-		<dependency>
-    <groupId>org.checkerframework</groupId>
-    <artifactId>checker-qual</artifactId>
-    <version>3.41.0</version>
-</dependency>
+        <!-- Checker Framework -->
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.41.0</version>
+        </dependency>
+
+        <!-- Swagger/OpenAPI Documentation -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.2.0</version>
+        </dependency>
 
 
     </dependencies>
