@@ -1,20 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.example</groupId>
-    <artifactId>building-permission-system</artifactId>
-    <version>1.0.0</version>
+    <artifactId>building-system</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Building Permission System</name>
-    <description>Spring Boot GIS-integrated Building Permissions Management System</description>
+    <name>building-system</name>
+    <description>Spring Boot Building Permissions System</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
+
         <version>3.5.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
@@ -22,18 +23,21 @@
     <properties>
         <java.version>17</java.version>
       <hibernate.version>6.2.5.Final</hibernate.version>
-        <spring-boot.version>3.2.12</spring-boot.version>
-		<maven.compiler.source> 19.0.1</maven.compiler.source>
+        <spring-boot.version>3.2.12</spring-boot.version> 
+        <maven.compiler.source> 19.0.1</maven.compiler.source>
 		<maven.compiler.target> 19.0.1</maven.compiler.target>
     </properties>
 
     <dependencies>
 
-        <!-- Spring Boot Starters --> 
+    <dependencies>
+        <!-- Web Starter -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,10 +51,14 @@
         </dependency>
 
         <!-- PostgreSQL Driver -->
+
+        <!-- PostgreSQL -->
+
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
+
 
 
         <dependency>
@@ -74,11 +82,21 @@
         </dependency>
 
         <!-- Developer Tools -->
+
+        <!-- Spring Data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Optional: DevTools for Hot Reload -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
         </dependency>
+
 
         <!-- Test Dependencies -->
         <dependency>
@@ -93,10 +111,13 @@
     <version>3.41.0</version>
 </dependency>
 
+
     </dependencies>
 
     <build>
         <plugins>
+
+            <!-- IMPORTANT: This enables 'mvn spring-boot:run' -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
