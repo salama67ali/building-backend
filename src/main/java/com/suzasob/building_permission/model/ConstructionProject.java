@@ -82,13 +82,12 @@ private java.util.List<GISAssessment> gisAssessments = new java.util.ArrayList<>
                 assessment.setProject(null);
         }
 
-        public Object getGISAssessment() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getGISAssessment'");
-        }
+      public java.util.List<GISAssessment> getGISAssessment() {
+    return gisAssessments;
+}
 
-        public Long getId() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException("Unimplemented method 'getId'");
-        }
+public Long getId() {
+    return projectId;
+}
+
 }

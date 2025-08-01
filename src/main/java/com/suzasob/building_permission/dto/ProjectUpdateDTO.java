@@ -5,10 +5,13 @@ import lombok.Data;
 @Data
 public class ProjectUpdateDTO {
     private Long projectId;
+    private String name;
+    private String address;
+    private String torDocument;
     private String status;
     private String buildingPlan;
     public String toUpperCase() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'toUpperCase'");
+        String status = null;
+        return status.toUpperCase();
     }
 }

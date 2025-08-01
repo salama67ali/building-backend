@@ -36,7 +36,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Invalid user data provided"),
             @ApiResponse(responseCode = "409", description = "User with this email already exists")
     })
-    public ResponseEntity<User> register(
+    public ResponseEntity<Object> register(
             @Parameter(description = "User information to register", required = true) @RequestBody User user) {
         return ResponseEntity.ok(userService.registerUser(user));
     }

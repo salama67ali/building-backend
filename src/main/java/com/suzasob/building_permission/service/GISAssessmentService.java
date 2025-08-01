@@ -19,10 +19,27 @@ public class GISAssessmentService {
     @Autowired
     private ConstructionProjectRepository projectRepository;
 
+    // 1. Assess risk with explicit project
     public GISAssessment assessRisk(GISAssessment assessment, ConstructionProject project) {
         assessment.setProject(project);
         project.getGisAssessments().add(assessment);
         projectRepository.save(project);
+        return assessment;
+    }
+
+    // 2. Assess risk using project inside GISAssessment
+    public GISAssessment assessRisk(GISAssessment assessment) {
+        ConstructionProject project = assessment.getProject();
+        if (project != null) {
+            project.getGisAssessments().add(assessment);
+            projectRepository.save(project);  // Save updated project
+        }
+        return gisRepo.save(assessment);  // Save GISAssessment
+    }
+
+    // 3. Just map to entity, no DB operations
+    public GISAssessment mapToEntity(GISAssessment assessment, ConstructionProject project) {
+        assessment.setProject(project);
         return assessment;
     }
 
@@ -40,15 +57,5 @@ public class GISAssessmentService {
 
     public List<GISAssessment> findByRiskLevel(String riskLevel) {
         return gisRepo.findByRiskLevel(riskLevel);
-    }
-
-    public GISAssessment mapToEntity(GISAssessment assessment, ConstructionProject project) {
-        assessment.setProject(project);
-        return assessment;
-    }
-
-    public Object assessRisk(GISAssessment assessment) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'assessRisk'");
     }
 }
