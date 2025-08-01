@@ -1,78 +1,53 @@
 package com.suzasob.building_permission.controller;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.suzasob.building_permission.dto.ProjectRegistrationDTO;
+import com.suzasob.building_permission.dto.ProjectResponseDTO;
+import com.suzasob.building_permission.dto.ProjectUpdateDTO;
+import com.suzasob.building_permission.service.ConstructionProjectService;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.suzasob.building_permission.model.ConstructionProject;
-import com.suzasob.building_permission.service.ConstructionProjectService;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
-@Tag(name = "Construction Projects", description = "API for managing construction projects and building permits")
+@RequiredArgsConstructor
 public class ConstructionProjectController {
 
-    @Autowired
-    private ConstructionProjectService projectService;
+    private final ConstructionProjectService projectService;
 
+    //  1. Register a new project
     @PostMapping
-    @Operation(summary = "Submit a new construction project", description = "Submit a new construction project for review and permit processing")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Project submitted successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid project data provided"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<ConstructionProject> submit(
-            @Parameter(description = "Construction project details", required = true) @RequestBody ConstructionProject project) {
-        return ResponseEntity.ok(projectService.submitProject(project));
+    public ResponseEntity<ProjectResponseDTO> submitProject(@RequestBody ProjectRegistrationDTO dto) {
+        ProjectResponseDTO response = projectService.submitProject(dto);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/status/{status}")
-    @Operation(summary = "Get projects by status", description = "Retrieve all construction projects with a specific status")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Projects retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid status specified")
-    })
-    public ResponseEntity<List<ConstructionProject>> getByStatus(
-            @Parameter(description = "Project status to filter by", required = true, example = "PENDING") @PathVariable String status) {
-        return ResponseEntity.ok(projectService.getProjectsByStatus(status));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ConstructionProject> update(@PathVariable Long id, @RequestBody ConstructionProject project) {
-        return ResponseEntity.ok(projectService.updateProject(id, project));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        projectService.deleteProject(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ConstructionProject> getById(@PathVariable Long id) {
-        ConstructionProject project = (ConstructionProject) projectService.getProjectById(id);
-        if (project != null) {
-            return ResponseEntity.ok(project);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
+    //  2. Get all projects
     @GetMapping
-    public ResponseEntity<Object> getAll() {
-        return ResponseEntity.ok(projectService.getAllProjects());
+    public ResponseEntity<List<ProjectResponseDTO>> getAllProjects() {
+        List<ProjectResponseDTO> projects = projectService.getAllProjects();
+        return ResponseEntity.ok(projects);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Object> getByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(projectService.getProjectById(userId));
+    //  3. Get projects by status
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<ProjectResponseDTO>> getProjectsByStatus(@PathVariable String status) {
+        List<ProjectResponseDTO> projects = projectService.getProjectsByStatus(status);
+        return ResponseEntity.ok(projects);
     }
+
+     @GetMapping("/api/projects/{id}")
+public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long id) {
+    return ResponseEntity.ok(projectService.getProjectById(id));
+}
+    //  4. Update project status
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ProjectResponseDTO> updateProjectStatus(@PathVariable Long id, @RequestBody ProjectUpdateDTO updateDTO) {
+        ProjectResponseDTO updatedProject = projectService.updateProjectStatus(id, updateDTO);
+        return ResponseEntity.ok(updatedProject);
+    }
+
 }

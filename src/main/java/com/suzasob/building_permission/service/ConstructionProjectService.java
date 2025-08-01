@@ -1,100 +1,111 @@
 package com.suzasob.building_permission.service;
 
+import com.suzasob.building_permission.dto.*;
 import com.suzasob.building_permission.model.ConstructionProject;
+import com.suzasob.building_permission.model.User;
 import com.suzasob.building_permission.repository.ConstructionProjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.suzasob.building_permission.repository.UserRepository;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ConstructionProjectService {
 
-    @Autowired
-    private ConstructionProjectRepository projectRepository;
+    private final ConstructionProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    private final GeometryFactory geometryFactory = new GeometryFactory();
+    // Create project from DTO
+    public ProjectResponseDTO submitProject(ProjectRegistrationDTO dto) {
+        ConstructionProject project = mapToEntity(dto);
+        ConstructionProject saved = projectRepository.save(project);
+        return mapToDTO(saved);
+    }
 
-    // Create
-    public ConstructionProject submitProject(ConstructionProject project) {
-        // For new projects, ensure the ID is null so Hibernate treats it as an insert
-        if (project.getProjectId() != null && project.getProjectId() <= 0) {
-            project.setProjectId(null);
+    // Get all projects
+    public List<ProjectResponseDTO> getAllProjects() {
+        return projectRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Get by status
+    public List<ProjectResponseDTO> getProjectsByStatus(String status) {
+        return projectRepository.findByStatus(status.toUpperCase())
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Mapping DTO → Entity
+    public ConstructionProject mapToEntity(ProjectRegistrationDTO dto) {
+        ConstructionProject entity = new ConstructionProject();
+        entity.setName(dto.getName());
+        entity.setAddress(dto.getAddress());
+        entity.setStatus(dto.getStatus());
+        entity.setSubmissionDate(dto.getSubmissionDate());
+        entity.setTorDocument(dto.getTorDocument());
+        entity.setBuildingPlan(dto.getBuildingPlan());
+        entity.setLatitude(dto.getLatitude());
+        entity.setLongitude(dto.getLongitude());
+
+        entity.setOwner(userRepository.findById(dto.getOwnerId()).orElse(null));
+        entity.setConsultant(userRepository.findById(dto.getConsultantId()).orElse(null));
+        entity.setEngineer(userRepository.findById(dto.getEngineerId()).orElse(null));
+        return entity;
+    }
+
+    // Mapping Entity → DTO
+    public ProjectResponseDTO mapToDTO(ConstructionProject project) {
+        ProjectResponseDTO dto = new ProjectResponseDTO();
+        dto.setProjectId(project.getProjectId());
+        dto.setName(project.getName());
+        dto.setAddress(project.getAddress());
+        dto.setStatus(project.getStatus());
+        dto.setSubmissionDate(project.getSubmissionDate());
+        dto.setTorDocument(project.getTorDocument());
+        dto.setBuildingPlan(project.getBuildingPlan());
+        dto.setLatitude(project.getLatitude());
+        dto.setLongitude(project.getLongitude());
+
+        dto.setOwner(mapUser(project.getOwner()));
+        dto.setConsultant(mapUser(project.getConsultant()));
+        dto.setEngineer(mapUser(project.getEngineer()));
+
+        if (project.getGISAssessment() != null) {
+            dto.setRiskType(project.getGISAssessment());
+            dto.setRiskLevel(project.getGISAssessment());
+            dto.setReportFile(project.getGISAssessment());
+            dto.setAssessmentDate(project.getGISAssessment());
         }
-
-        // Create Point geometry from latitude and longitude if provided
-        if (project.getLatitude() != null && project.getLongitude() != null) {
-            Coordinate coordinate = new Coordinate(project.getLongitude(), project.getLatitude());
-            Point point = geometryFactory.createPoint(coordinate);
-            point.setSRID(4326); // Set SRID for WGS84
-            project.setGeom(point);
-        }
-
-        return projectRepository.save(project);
+        return dto;
     }
 
-    // Read all
-    public List<ConstructionProject> getAllProjects() {
-        return projectRepository.findAll();
+    private SimpleUserDTO mapUser(User user) {
+        if (user == null) return null;
+        SimpleUserDTO dto = new SimpleUserDTO();
+        dto.setUserId(user.getUserId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole().name());
+        return dto;
     }
 
-    // Read by ID
-    public ConstructionProject getProjectById(Long id) {
-        return projectRepository.findById(id).orElse(null);
-    }
-
-    // Read by status
-    public List<ConstructionProject> getProjectsByStatus(String status) {
-        return projectRepository.findByStatus(status);
-    }
-
-    // Read by user ID (assuming it's owner_id)
-    public Optional<ConstructionProject> getProjectsByUserId(Long userId) {
-        return projectRepository.findById(userId);
-    }
-
-    // Update
-    public ConstructionProject updateProject(Long id, ConstructionProject updatedProject) {
-        Optional<ConstructionProject> existing = projectRepository.findById(id);
-        if (existing.isPresent()) {
-            ConstructionProject project = existing.get();
-            project.setName(updatedProject.getName());
-            project.setStatus(updatedProject.getStatus());
-            project.setSubmissionDate(updatedProject.getSubmissionDate());
-            project.setTorDocument(updatedProject.getTorDocument());
-            project.setBuildingPlan(updatedProject.getBuildingPlan());
-
-            // Update location fields directly
-            project.setAddress(updatedProject.getAddress());
-            project.setRiskZoneType(updatedProject.getRiskZoneType());
-            project.setLatitude(updatedProject.getLatitude());
-            project.setLongitude(updatedProject.getLongitude());
-
-            // Create Point geometry from updated latitude and longitude if provided
-            if (updatedProject.getLatitude() != null && updatedProject.getLongitude() != null) {
-                Coordinate coordinate = new Coordinate(updatedProject.getLongitude(), updatedProject.getLatitude());
-                Point point = geometryFactory.createPoint(coordinate);
-                point.setSRID(4326); // Set SRID for WGS84
-                project.setGeom(point);
-            }
-
-            // Set user references
-            project.setOwner(updatedProject.getOwner());
-            project.setConsultant(updatedProject.getConsultant());
-            project.setEngineer(updatedProject.getEngineer());
-
-            return projectRepository.save(project);
-        } else {
-            return null;
-        }
-    }
-
-    // Delete
-    public void deleteProject(Long id) {
-        projectRepository.deleteById(id);
+   public ProjectResponseDTO getProjectById(Long id) {
+    ConstructionProject project = projectRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Project with ID " + id + " not found"));
+    return mapToDTO(project);
+}
+    public ProjectResponseDTO updateProjectStatus(Long projectId, ProjectUpdateDTO updateDTO) {
+        ConstructionProject project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("Project with ID " + projectId + " not found"));
+        project.setStatus(updateDTO.toUpperCase());
+        ConstructionProject updatedProject = projectRepository.save(project);
+        return mapToDTO(updatedProject);
     }
 }

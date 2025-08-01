@@ -18,7 +18,32 @@ public class GISAssessmentController {
     private GISAssessmentService service;
 
     @PostMapping
-    public ResponseEntity<GISAssessment> assess(@RequestBody GISAssessment assessment) {
+    public ResponseEntity<Object> assess(@RequestBody GISAssessment assessment) {
         return ResponseEntity.ok(service.assessRisk(assessment));
     }
+    @PostMapping("/project")
+    public ResponseEntity<Object> assessByProject(@RequestBody GISAssessment assessment) {
+        return ResponseEntity.ok(service.assessRisk(assessment));
+    }
+    @PostMapping("/risk")
+    public ResponseEntity<Object> assessByRisk(@RequestBody GISAssessment assessment) {
+        return ResponseEntity.ok(service.assessRisk(assessment));
+}
+    @PostMapping("/level")
+    public ResponseEntity<Object> assessByLevel(@RequestBody GISAssessment assessment) {
+        return ResponseEntity.ok(service.assessRisk(assessment));
+}
+    @PostMapping("/id")
+    public ResponseEntity<Object> assessById(@RequestBody GISAssessment assessment) {
+        return ResponseEntity.ok(service.assessRisk(assessment));
+}
+    @PostMapping("/entity")
+    public ResponseEntity<Object> mapToEntity(@RequestBody GISAssessment assessment) {
+        return ResponseEntity.ok(service.mapToEntity(assessment, null));
+    }
+    @PostMapping("/projectId")
+    public ResponseEntity<Object> getAssessmentsByProjectId(@RequestBody GISAssessment assessment) {
+        Long projectId = assessment.getProject().getId();
+        return ResponseEntity.ok(service.getAssessmentsByProjectId(projectId));
+}
 }

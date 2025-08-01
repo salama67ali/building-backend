@@ -12,4 +12,8 @@ public interface GISAssessmentRepository extends JpaRepository<GISAssessment, Lo
     List<GISAssessment> findByProject(ConstructionProject project);
 
     List<GISAssessment> findByRiskType(String riskType);
+
+    List<GISAssessment> findByRiskLevel(String riskLevel);
+
+    List<GISAssessment> findByProject_ProjectId(Long projectId);
 }

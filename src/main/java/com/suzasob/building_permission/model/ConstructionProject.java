@@ -39,9 +39,9 @@ public class ConstructionProject {
     @Schema(description = "Physical address of the construction site", example = "123 Main Street, Downtown District", required = true)
     private String address;
 
-    @Schema(description = "Risk zone type of the location", example = "Flood", allowableValues = { "Flood", "Erosion",
-            "Earthquake", "Safe" })
-    private String riskZoneType; // e.g., "Flood", "Erosion", etc.
+    //@Schema(description = "Risk zone type of the location", example = "Flood", allowableValues = { "Flood", "Erosion",
+        //    "Earthquake", "Safe" })
+    //private String riskZoneType; // e.g., "Flood", "Erosion", etc.
 
     @Schema(description = "Latitude coordinate of the construction site", example = "40.7128")
     private Double latitude;
@@ -69,4 +69,26 @@ public class ConstructionProject {
     @Schema(description = "Engineer assigned to the project")
     private User engineer;
 
+   @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+private java.util.List<GISAssessment> gisAssessments = new java.util.ArrayList<>();
+ // or whatever your type is
+        public void addGISAssessment(GISAssessment assessment) {
+                gisAssessments.add(assessment);
+                assessment.setProject(this);
+        }
+        
+        public void removeGISAssessment(GISAssessment assessment) {
+                gisAssessments.remove(assessment);
+                assessment.setProject(null);
+        }
+
+        public Object getGISAssessment() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getGISAssessment'");
+        }
+
+        public Long getId() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'getId'");
+        }
 }
