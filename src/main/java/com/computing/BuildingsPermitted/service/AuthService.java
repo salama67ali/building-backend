@@ -29,17 +29,36 @@ public class AuthService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider; // concrete class, not generic
 
-    /** ✅ Register a new user */
+    /** Register a new user */
     public AuthResponse register(UserRegistrationRequest request) {
-        if (userRepository.findByEmail(request.getEmail().trim().toLowerCase()).isPresent()) {
+        String email = request.getEmail().trim().toLowerCase();
+        if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
 
+        // Confirm password check (if confirmPassword is null, treat as matching to support internal admin addUser path)
+        String confirm = request.getConfirmPassword();
+        if (confirm != null && !confirm.equals(request.getPassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
+
+        // Normalize role: default OWNER if missing, uppercase and replace '-' with '_'
+        String role = request.getRole();
+        if (role == null || role.isBlank()) {
+            role = "OWNER";
+        } else {
+            role = role.trim().toUpperCase().replace('-', '_');
+        }
+
         User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
         user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail().trim().toLowerCase());
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
+        user.setPhone(request.getPhone());
+        user.setAddress(request.getAddress());
+        user.setRole(role);
 
         User savedUser = userRepository.save(user);
 
@@ -52,18 +71,23 @@ public class AuthService {
         );
     }
 
-    /** ✅ Authenticate user by email and return JWT */
-    public AuthResponse login(String email, String password) {
+    /** Authenticate user by email/password/role and return JWT */
+    public AuthResponse login(String email, String password, String role) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String token = jwtTokenProvider.generateToken(authentication);
-
         Optional<User> userOpt = userRepository.findByEmail(email);
         User user = userOpt.orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Validate provided role matches stored user role
+        if (role == null || user.getRole() == null || !user.getRole().equalsIgnoreCase(role.trim())) {
+            throw new RuntimeException("Invalid role for this account");
+        }
+
+        String token = jwtTokenProvider.generateToken(authentication, user.getRole());
 
         return new AuthResponse(
                 user.getId(),
@@ -74,7 +98,7 @@ public class AuthService {
         );
     }
 
-    /** ✅ Get current logged-in user */
+    /** Get current logged-in user */
     public Optional<User> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {

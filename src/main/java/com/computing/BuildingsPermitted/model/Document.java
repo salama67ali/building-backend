@@ -17,6 +17,9 @@ public class Document {
     private String name;
     private String url; // could be file path or storage URL
 
+    @Column(nullable = true)
+    private String type; // TOR or PLAN
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uploaded_by_id")
     private User uploadedBy;
@@ -36,6 +39,8 @@ public class Document {
     public void setName(String name) { this.name = name; }
     public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
     public User getUploadedBy() { return uploadedBy; }
     public void setUploadedBy(User uploadedBy) { this.uploadedBy = uploadedBy; }
     public LocalDateTime getUploadedAt() { return uploadedAt; }

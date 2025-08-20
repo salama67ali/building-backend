@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Size;
 
 public class UserRegistrationRequest {
     
+    private String firstName;
+    private String lastName;
+    
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
@@ -19,9 +22,16 @@ public class UserRegistrationRequest {
     @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
     
-    @NotBlank(message = "Role is required")
-    @Pattern(regexp = "^(owner|consultant|engineer|government-board|admin)$", 
-             message = "Role must be one of: owner, consultant, engineer, government-board, admin")
+    @NotBlank(message = "Confirm Password is required")
+    @Size(min = 6, message = "Confirm Password must be at least 6 characters")
+    private String confirmPassword;
+    
+    private String phone;
+    private String address;
+    
+    // Role is optional for this form; if provided must match allowed values
+    @Pattern(regexp = "^(OWNER|CONSULTANT|ENGINEER|GOVERNMENT_BOARD|ADMIN|owner|consultant|engineer|government-board|admin)?$",
+             message = "Role must be one of: OWNER, CONSULTANT, ENGINEER, GOVERNMENT_BOARD, ADMIN")
     private String role;
 
     public UserRegistrationRequest() {}
@@ -33,6 +43,10 @@ public class UserRegistrationRequest {
         this.role = role;
     }
 
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
     public String getUsername() {
         return username;
     }
@@ -56,6 +70,14 @@ public class UserRegistrationRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getConfirmPassword() { return confirmPassword; }
+    public void setConfirmPassword(String confirmPassword) { this.confirmPassword = confirmPassword; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 
     public String getRole() {
         return role;

@@ -9,4 +9,5 @@ import java.util.List;
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findByProject_Id(Long projectId);
     Page<Document> findByProject_Id(Long projectId, Pageable pageable);
+    List<Document> findByProject_IdAndType(Long projectId, String type);
 }

@@ -26,7 +26,6 @@ import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     @Autowired
@@ -53,7 +52,7 @@ public class UserController {
     @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> loginWithJwt(@Valid @RequestBody AuthRequest request) {
         try {
-            AuthResponse response = authService.login(request.getEmail(), request.getPassword());
+            AuthResponse response = authService.login(request.getEmail(), request.getPassword(), request.getRole());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -154,7 +153,9 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        if (!userRepository.existsById(id)) return ResponseEntity.notFound().build();
+        if (!userRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
         userRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }

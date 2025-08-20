@@ -40,6 +40,38 @@ public class AdminController {
         this.emailService = emailService;
     }
 
+    // Dashboard statistics for admin
+    @GetMapping("/stats")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getAdminStats() {
+        long totalUsers = userRepository.count();
+        int totalOwners = userRepository.findByRole("OWNER").size();
+        int totalConsultants = userRepository.findByRole("CONSULTANT").size();
+        int totalEngineers = userRepository.findByRole("ENGINEER").size();
+        int totalGovernmentBoards = userRepository.findByRole("GOVERNMENT_BOARD").size();
+
+        long pendingApplications = projectRepository.findByStatus("pending").size();
+        long approvedApplications =
+                projectRepository.findByStatus("approved").size()
+                        + projectRepository.findByStatus("ENGINEER_APPROVED").size()
+                        + projectRepository.findByStatus("PERMIT_GRANTED").size();
+        long rejectedApplications =
+                projectRepository.findByStatus("rejected").size()
+                        + projectRepository.findByStatus("ENGINEER_REJECTED").size()
+                        + projectRepository.findByStatus("PERMIT_REJECTED").size();
+
+        return ResponseEntity.ok(Map.of(
+                "totalUsers", totalUsers,
+                "totalOwners", totalOwners,
+                "totalConsultants", totalConsultants,
+                "totalEngineers", totalEngineers,
+                "totalGovernmentBoards", totalGovernmentBoards,
+                "pendingApplications", pendingApplications,
+                "approvedApplications", approvedApplications,
+                "rejectedApplications", rejectedApplications
+        ));
+    }
+
     // Send notifications (placeholder: returns targeted recipients count)
     @PostMapping("/notifications")
     @PreAuthorize("hasRole('ADMIN')")
